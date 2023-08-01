@@ -10,13 +10,8 @@ age_model = load_model(age_dir)
 emotion_dict = {0: "Angry", 1: "Happy", 2: "Disgust",
                 3: "Surprise", 4: "Sad", 5: "Fear", 6: "Neutral"}
 
-face_locations = []
-face_encodings = []
-face_names = []
-known_face_encodings = []
-known_face_names = []
 
-def face_confidence(face_distance, face_match_threshold=0.6):
+def face_confidence(face_distance, face_match_threshold=0.1):
     range = (1.0 - face_match_threshold)
     linear_val = (1.0 - face_distance) / (range * 2.0)
 
@@ -27,14 +22,7 @@ def face_confidence(face_distance, face_match_threshold=0.6):
                  math.pow((linear_val - 0.5) * 2, 0.2))) * 100
         return str(round(value, 2)) + '%'
 
-def encode_faces():
-	for image in os.listdir('images'):
-		face_image = fr.load_image_file(f'images/{image}')
-		face_encoding = fr.face_encodings(face_image)[0]
 
-		known_face_encodings.append(face_encoding)
-		known_face_names.append(image)
-                
 def get_age(distr):
     if distr >= 1 and distr <= 10:
         return "9-18"
@@ -54,3 +42,11 @@ def get_gender(prob):
         return "Male"
     else:
         return "Female"
+
+
+def multiply_list_of_tuples(list_of_tuples, factor):
+    result = []
+    for tpl in list_of_tuples:
+        multiplied_tuple = tuple(item * factor for item in tpl)
+        result.append(multiplied_tuple)
+    return result
