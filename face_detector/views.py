@@ -16,14 +16,18 @@ FACE_DETECTOR_PATH = "{base_path}/cascades/haarcascade_frontalface_alt2.xml".for
 def detect(request):
     data = {"success": False}
     if request.method == "POST":
-        if request.FILES.get('image', None) is not None:
-            image = t._grab_image(stream=request.FILES['image'])
-        else:
-            url = request.POST.get("url", None)
-            if url is None:
-                data["error"] = "No URL provided."
-                return JsonResponse(data)
-            image = t._grab_image(url=url)
+        # if request.FILES.get('image', None) is not None:
+        #     image = t._grab_image(stream=request.FILES['image'])
+        # elif request.FILES.get('str', None) is not None:
+        #     image = t._grab_image()
+        # else:
+        #     url = request.POST.get("url", None)
+        #     if url is None:
+        #         data["error"] = "No URL provided."
+        #         return JsonResponse(data)
+        #     image = t._grab_image(url=url)
+        if request.FILES.get('str', None) is not None:
+            image = t._grab_image(encoding=request.FILES['str'])
         # START WRAPPING OF COMPUTER VISION APP
 
         face_locations = []
@@ -91,6 +95,5 @@ def detect(request):
                      "gender": m.get_gender(age_prediction[1]), "age": m.get_age(age_prediction[0]),
                      "name": name})
 
-        # END WRAPPING OF COMPUTER VISION APP
         data["success"] = True
     return JsonResponse(data)
