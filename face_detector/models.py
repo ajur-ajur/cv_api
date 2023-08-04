@@ -1,5 +1,6 @@
 import numpy as np
 from keras.models import load_model
+from django.db import models
 
 
 model_age = load_model('face_detector/model/agegender.h5')
@@ -21,7 +22,7 @@ def get_age(distr):
 
 
 def get_gender(prob):
-    if prob < 0.5:
+    if prob > 0.5:
         return "Male"
     else:
         return "Female"
@@ -34,3 +35,13 @@ def get_emotion(hrr):
 
     maxindex = int(np.argmax(hrr))
     return emotion_dict[maxindex]
+
+
+class FaceData(models.Model):
+    top = models.IntegerField()
+    right = models.IntegerField()
+    bottom = models.IntegerField()
+    left = models.IntegerField()
+    emotion = models.CharField(max_length=50)
+    age = models.CharField(max_length=20)
+    gender = models.CharField(max_length=10)

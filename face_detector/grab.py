@@ -8,7 +8,7 @@ def _grab_image(path=None, stream=None, url=None):
         image = cv2.imread(path)
     else:
         if url is not None:
-            resp = urllib.urlopen(url)
+            resp = urllib.request.urlopen(url)
             data = resp.read()
         elif stream is not None:
             data = stream.read()
