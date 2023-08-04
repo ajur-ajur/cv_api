@@ -34,6 +34,12 @@ Sayangnya dlib tidak memiliki distribusi resmi untuk perangkat Windows, namun te
 
 [Baca di sini untuk mengetahui cara pemasangan Face Recognition pada perangkat Windows.](https://github.com/ageitgey/face_recognition/issues/175#issue-257710508)
 
+Setelah berhasil memasang dlib, anda bisa menjalankan perintah yang sama untuk memasang library pendukung sisanya:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Running
 
 Repository ini mengandung sisi server dan sisi client yang dapat dijalankan pada perangkat yang sama. Untuk menjalankan prediksi gambar, jalankan terlebih dahulu server dengan menggunakan perintah di bawah:
