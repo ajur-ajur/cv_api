@@ -1,10 +1,11 @@
 import requests
 import json
 import cv2
+import sys
 
 api_url = "http://127.0.0.1:8000/face_detection/detect/"
 
-image_path = "images/obama.jpg"
+image_path = "tes.jpg"
 payload = {"url": image_path}
 image = cv2.imread(image_path)
 
