@@ -21,8 +21,16 @@ def detect(request):
                 return JsonResponse(data)
             image = g._grab_image(url=url)
 
+        known_names = m.known_names()
+        known_encodings = m.known_encodings()
+
         small_image = cv2.resize(image, (0, 0), fx=0.25, fy=0.25)
-        face_locations = fr.face_locations(small_image)
+
+        face_locations = m.face_locations(small_image)[0]
+        face_encodings = m.encode_detected_face(small_image)[0]
+
+        matches = m.compare_encoded_faces(
+            known_encodings, face_encodings, known_names)[0]
 
         for (top, right, bottom, left) in face_locations:
             ROI = image[top:bottom, left:right]
@@ -33,21 +41,22 @@ def detect(request):
             predict_emotion = m.model_emotion.predict(input_image)
             predict_age = m.model_age.predict(input_image)
 
-            face_instance = m.FaceData(
-                top=top,
-                right=right,
-                bottom=bottom,
-                left=left,
-                emotion=m.get_emotion(predict_emotion),
-                age=m.get_age(predict_age[1]),
-                gender=m.get_gender(predict_age[0]),
-            )
-            face_instance.save()
+            # face_instance = m.FaceData(
+            #     top=top,
+            #     right=right,
+            #     bottom=bottom,
+            #     left=left,
+            #     emotion=m.get_emotion(predict_emotion),
+            #     age=m.get_age(predict_age[1]),
+            #     gender=m.get_gender(predict_age[0]),
+            # )
+            # face_instance.save()
 
-            data["faces"].append({"faces": face_locations,
+            data["faces"].append({"location": face_locations,
                                   "emotion": m.get_emotion(predict_emotion),
                                   "age": m.get_age(predict_age[1]),
                                   "gender": m.get_gender(predict_age[0]),
+                                  "name": matches,
                                   })
         data["success"] = True
 
