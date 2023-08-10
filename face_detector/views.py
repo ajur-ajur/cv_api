@@ -33,13 +33,16 @@ def detect(request):
             known_encodings, face_encodings, known_names)[0]
 
         for (top, right, bottom, left) in face_locations:
-            ROI = image[top:bottom, left:right]
-            image_grey = cv2.cvtColor(ROI, cv2.COLOR_BGR2GRAY)
-            input_image = np.expand_dims(np.expand_dims(
-                cv2.resize(image_grey, (48, 48)), -1), 0)
+            roi = image[top:bottom, left:right]
+            image_grey = cv2.cvtColor(roi, cv2.COLOR_RGB2GRAY)
 
-            predict_emotion = m.model_emotion.predict(input_image)
-            predict_age = m.model_age.predict(input_image)
+            emo_image = np.expand_dims(np.expand_dims(
+                cv2.resize(image_grey, (48, 48)), -1), 0)
+            ageg_image = np.expand_dims(np.expand_dims(
+                cv2.resize(image_grey, (64, 64)), -1), 0)
+
+            predict_emotion = m.model_emotion.predict(emo_image)
+            predict_age = m.model_age.predict(ageg_image)
 
             # face_instance = m.FaceData(
             #     top=top,
@@ -54,8 +57,8 @@ def detect(request):
 
             data["faces"].append({"location": face_locations,
                                   "emotion": m.get_emotion(predict_emotion),
-                                  "age": m.get_age(predict_age[1]),
-                                  "gender": m.get_gender(predict_age[0]),
+                                  "age": m.get_age(predict_age[0]),
+                                  "gender": m.get_gender(predict_age[1]),
                                   "name": matches,
                                   })
         data["success"] = True

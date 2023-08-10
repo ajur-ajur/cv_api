@@ -10,22 +10,22 @@ model_emotion = load_model('face_detector/model/emotion.h5')
 
 
 def get_age(distr):
-    # if distr >= 1 and distr <= 10:
-    #     return "9-18"
-    # if distr >= 11 and distr <= 30:
-    #     return "19-25"
-    # if distr >= 31 and distr <= 35:
-    #     return "26-37"
-    # if distr >= 36 and distr <= 40:
-    #     return "38-49"
-    # if distr >= 60:
-    #     return "60 +"
-    # return 'Unknown'
-    age_list = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)',
-                '(25, 32)', '(38, 43)', '(48, 53)', '(60, 100)']
+    if distr >= 1 and distr <= 10:
+        return "9-18"
+    if distr >= 11 and distr <= 30:
+        return "19-25"
+    if distr >= 31 and distr <= 35:
+        return "26-37"
+    if distr >= 36 and distr <= 40:
+        return "38-49"
+    if distr >= 60:
+        return "60 +"
+    return 'Unknown'
+    # age_list = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)',
+    #             '(25, 32)', '(38, 43)', '(48, 53)', '(60, 100)']
 
-    maxindex = int(np.argmax(distr))
-    return age_list[maxindex]
+    # maxindex = int(np.argmax(distr))
+    # return age_list[maxindex]
 
 
 def get_gender(prob):
