@@ -26,13 +26,13 @@ while (True):
             data = response.json()
             print("Response JSON:")
             print(json.dumps(data, indent=2))
-            success = True
+            success = data['success']
 
             count = 0
 
-        else:
-            print("Request failed with status code:", response.status_code)
-            count = 0
+        # else:
+        #     print("Request failed with status code:", response.status_code)
+        #     count = 0
 
     if success:
         count += 1

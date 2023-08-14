@@ -21,46 +21,51 @@ def detect(request):
                 return JsonResponse(data)
             image = g._grab_image(url=url)
 
-        known_names = m.known_names()
-        known_encodings = m.known_encodings()
-
         small_image = cv2.resize(image, (0, 0), fx=0.25, fy=0.25)
 
-        face_locations = m.face_locations(small_image)[0]
-        face_encodings = m.encode_detected_face(small_image)[0]
+        is_detected = m.face_locations(small_image)[0]
 
-        matches = m.compare_encoded_faces(
-            known_encodings, face_encodings, known_names)[0]
+        if len(is_detected) == 0:
+            data['success'] = False
+        else:
+            known_names = m.known_names()
+            known_encodings = m.known_encodings()
 
-        for (top, right, bottom, left) in face_locations:
-            roi = image[top:bottom, left:right]
-            image_grey = cv2.cvtColor(roi, cv2.COLOR_RGB2GRAY)
+            face_locations = m.face_locations(small_image)[0]
+            face_encodings = m.encode_detected_face(small_image)[0]
 
-            emo_image = np.expand_dims(np.expand_dims(
-                cv2.resize(image_grey, (48, 48)), -1), 0)
-            ageg_image = np.expand_dims(np.expand_dims(
-                cv2.resize(image_grey, (64, 64)), -1), 0)
+            matches = m.compare_encoded_faces(
+                known_encodings, face_encodings, known_names)[0]
 
-            predict_emotion = m.model_emotion.predict(emo_image)
-            predict_age = m.model_age.predict(ageg_image)
+            for (top, right, bottom, left) in face_locations:
+                roi = image[top:bottom, left:right]
+                image_grey = cv2.cvtColor(roi, cv2.COLOR_RGB2GRAY)
 
-            # face_instance = m.FaceData(
-            #     top=top,
-            #     right=right,
-            #     bottom=bottom,
-            #     left=left,
-            #     emotion=m.get_emotion(predict_emotion),
-            #     age=m.get_age(predict_age[1]),
-            #     gender=m.get_gender(predict_age[0]),
-            # )
-            # face_instance.save()
+                emo_image = np.expand_dims(np.expand_dims(
+                    cv2.resize(image_grey, (48, 48)), -1), 0)
+                ageg_image = np.expand_dims(np.expand_dims(
+                    cv2.resize(image_grey, (64, 64)), -1), 0)
 
-            data["faces"].append({"location": face_locations,
-                                  "emotion": m.get_emotion(predict_emotion),
-                                  "age": m.get_age(predict_age[0]),
-                                  "gender": m.get_gender(predict_age[1]),
-                                  "name": matches,
-                                  })
-        data["success"] = True
+                predict_emotion = m.model_emotion.predict(emo_image)
+                predict_age = m.model_age.predict(ageg_image)
+
+                # face_instance = m.FaceData(
+                #     top=top,
+                #     right=right,
+                #     bottom=bottom,
+                #     left=left,
+                #     emotion=m.get_emotion(predict_emotion),
+                #     age=m.get_age(predict_age[1]),
+                #     gender=m.get_gender(predict_age[0]),
+                # )
+                # face_instance.save()
+
+                data["faces"].append({"location": face_locations,
+                                      "emotion": m.get_emotion(predict_emotion),
+                                      "age": m.get_age(predict_age[0]),
+                                      "gender": m.get_gender(predict_age[1]),
+                                      "name": matches,
+                                      })
+            data["success"] = True
 
     return JsonResponse(data)
