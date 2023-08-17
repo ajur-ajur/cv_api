@@ -7,14 +7,14 @@ count = 0
 des = 90  # 30 = 1 detik
 success = False
 
-vid = cv2.VideoCapture(1)
+vid = cv2.VideoCapture(0)
 
 while (True):
     ret, frame = vid.read()
     count += 1
 
     if (des / count == 1):
-        image_path = "frame.jpg"
+        image_path = "image/frame.jpg"
 
         cv2.imwrite(image_path, frame)
         payload = {"url": image_path}
@@ -47,7 +47,6 @@ while (True):
             right *= 4
             bottom *= 4
             left *= 4
-
             cv2.rectangle(frame, (left, top),
                           (right, bottom), (0, 255, 0), 2)
             cv2.rectangle(frame, (left, bottom),
