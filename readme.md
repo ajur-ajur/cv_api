@@ -1,6 +1,6 @@
 # About
 
-### WORK IN PROGRESS
+### DISCONTINUED
 
 Program API face recognition dirancang oleh tim Face Recognition Magang Lab ISR.
 
